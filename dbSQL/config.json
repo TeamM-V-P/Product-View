@@ -1,0 +1,8 @@
+{
+  "user": "code",
+  "host": "localhost",
+  "database": "sdc",
+  "password": "javajava",
+  "port": 5432
+}
+

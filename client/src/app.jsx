@@ -11,7 +11,6 @@ class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      allProds: [],
       clicked: false,
       mainprod: '',
       mainImage: '',
@@ -24,12 +23,24 @@ class App extends React.Component {
     console.log(this.state.mainprod.system);
   }
   getProduct() {
-    axios.get('/api/items')
+    axios.get('/api/items3')
       .then((results) => {
-        var random = Math.floor(Math.random()*results.data.length);
+        console.log(results)
+        let result = {
+          sku: results.data.sku,
+          item: results.data.sku,
+          price: results.data.sku,
+          system: results.data.system
+        }
+        let arr;
+        if (results.data.imgUrl) {
+          arr = results.data.imgUrl[0].split(',');
+        } else {
+          arr = results.data.imgurl.split(',');
+        }
+        result.imgurl = arr;
         this.setState({
-          allProds: results.data,
-          mainprod: results.data[random],
+          mainprod: result
         })
       })
       .catch((err) => {
@@ -44,6 +55,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log(this.state)
     if (this.state.mainprod === '') {
       return (
         <div>Welcome!</div>
@@ -61,7 +73,32 @@ class App extends React.Component {
           </div>
           </span>
           <span id="fakecarousel">
-            <FakeCarousel images={this.state.mainprod.imgUrl} handleClick={this.handleClick} />
+            <FakeCarousel images={this.state.mainprod.imgurl} handleClick={this.handleClick} />
+          </span>
+          <span className="price">
+            <PriceView product={this.state.mainprod}/>
+          </span>
+          <span className="ratings-bar"><RatingsBar /></span> <a href="" className="questions">5</a>
+          <svg height="24" width="24" className="tag">
+          <path fill="rgb(204, 0, 0)" d="M12.37 2L23 12.675 12.675 23 2 12.37V2h10.37zM8 5.5c-.677-.676-1.785-.665-2.476.025-.689.69-.7 1.798-.023 2.475.676.677 1.784.666 2.474-.024.69-.69.701-1.799.025-2.476z" /> </svg>
+          <a href="" className="text" id="buy2"><b>Buy 2 get 1 free on select video games</b></a>
+          <p className="in-store">In-store or Online</p> <a href="" className="price-detail">Details</a>
+          <div className="location">
+            <Location system={this.state.mainprod.system}/>
+          </div>
+        </div>
+      )
+    } else {
+      return(
+        <div className="main-view">
+          <div>
+            <a className="text" id="shopall" href="https://target.com/games">Shop All Games</a></div>
+          <span id="productview">
+          <div className="title">{this.state.mainprod.item}</div>
+            <ProductView item={this.state.mainprod}/>
+          </span>
+          <span id="fakecarousel">
+            <FakeCarousel images={this.state.mainprod.imgurl} handleClick={this.handleClick} />
           </span>
           <span className="price">
             <PriceView product={this.state.mainprod}/>
@@ -77,30 +114,6 @@ class App extends React.Component {
         </div>
       )
     }
-      return(
-        <div className="main-view">
-          <div>
-            <a className="text" id="shopall" href="https://target.com/games">Shop All Games</a></div>
-          <span id="productview">
-          <div className="title">{this.state.mainprod.item}</div>
-            <ProductView item={this.state.mainprod}/>
-          </span>
-          <span id="fakecarousel">
-            <FakeCarousel images={this.state.mainprod.imgUrl} handleClick={this.handleClick} />
-          </span>
-          <span className="price">
-            <PriceView product={this.state.mainprod}/>
-          </span>
-          <span className="ratings-bar"><RatingsBar /></span> <a href="" className="questions">5</a>
-          <svg height="24" width="24" className="tag">
-          <path fill="rgb(204, 0, 0)" d="M12.37 2L23 12.675 12.675 23 2 12.37V2h10.37zM8 5.5c-.677-.676-1.785-.665-2.476.025-.689.69-.7 1.798-.023 2.475.676.677 1.784.666 2.474-.024.69-.69.701-1.799.025-2.476z" /> </svg>
-          <a href="" className="text" id="buy2"><b>Buy 2 get 1 free on select video games</b></a>
-          <p className="in-store">In-store or Online</p> <a href="" className="price-detail">Details</a>
-          <div className="location">
-            <Location system={this.state.mainprod.system}/>
-          </div>
-        </div>
-      )
 
   }
 
